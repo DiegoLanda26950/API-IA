@@ -18,13 +18,11 @@ namespace LibrosAPI.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        // Obtener todos los libros locales
+        // CRUD libros
         public List<Libro> GetLibros() => LibrosLocales;
 
-        // Obtener libro por Id
         public Libro? GetLibroById(int id) => LibrosLocales.FirstOrDefault(l => l.Id == id);
 
-        // Agregar un libro
         public Libro AddLibro(Libro libro)
         {
             libro.Id = LibrosLocales.Count + 1;
@@ -32,18 +30,15 @@ namespace LibrosAPI.Services
             return libro;
         }
 
-        // Actualizar un libro
         public Libro? UpdateLibro(int id, Libro libroActualizado)
         {
             var libro = LibrosLocales.FirstOrDefault(l => l.Id == id);
             if (libro == null) return null;
-
             libro.Titulo = libroActualizado.Titulo;
             libro.Autor = libroActualizado.Autor;
             return libro;
         }
 
-        // Eliminar un libro
         public bool DeleteLibro(int id)
         {
             var libro = LibrosLocales.FirstOrDefault(l => l.Id == id);
@@ -52,7 +47,7 @@ namespace LibrosAPI.Services
             return true;
         }
 
-        // Obtener autores externos desde JSONPlaceholder
+        // Obtener todos los autores externos
         public async Task<List<UsuarioExterno>> GetAutoresExternos()
         {
             var client = _httpClientFactory.CreateClient();
@@ -60,6 +55,21 @@ namespace LibrosAPI.Services
                 "https://jsonplaceholder.typicode.com/users"
             );
             return usuarios ?? new List<UsuarioExterno>();
+        }
+
+        // -------------------------
+        // NUEVO: Filtrar autores externos por query
+        // -------------------------
+        public async Task<List<UsuarioExterno>> FiltrarAutoresExternos(string? query)
+        {
+            var autores = await GetAutoresExternos();
+            if (string.IsNullOrWhiteSpace(query))
+                return autores;
+
+            query = query.ToLower();
+            return autores
+                .Where(a => a.Name.ToLower().Contains(query) || a.Username.ToLower().Contains(query))
+                .ToList();
         }
     }
 }

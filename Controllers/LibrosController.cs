@@ -15,6 +15,7 @@ namespace LibrosAPI.Controllers
             _libroService = libroService;
         }
 
+        // CRUD libros
         [HttpGet]
         public IActionResult GetLibros() => Ok(_libroService.GetLibros());
 
@@ -46,11 +47,22 @@ namespace LibrosAPI.Controllers
             return eliminado ? NoContent() : NotFound();
         }
 
+        // Obtener todos los autores externos
         [HttpGet("autores-externos")]
         public async Task<IActionResult> GetAutoresExternos()
         {
             var autores = await _libroService.GetAutoresExternos();
             return Ok(autores);
+        }
+
+        // -------------------------
+        // NUEVO: Filtrar autores externos
+        // -------------------------
+        [HttpGet("autores-externos/filtrar")]
+        public async Task<IActionResult> FiltrarAutoresExternos([FromQuery] string? query)
+        {
+            var autoresFiltrados = await _libroService.FiltrarAutoresExternos(query);
+            return Ok(autoresFiltrados);
         }
     }
 }
