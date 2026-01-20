@@ -16,10 +16,7 @@ namespace LibrosAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLibros()
-        {
-            return Ok(_libroService.GetLibros());
-        }
+        public IActionResult GetLibros() => Ok(_libroService.GetLibros());
 
         [HttpGet("{id}")]
         public IActionResult GetLibroById(int id)
@@ -33,6 +30,20 @@ namespace LibrosAPI.Controllers
         {
             var nuevoLibro = _libroService.AddLibro(libro);
             return CreatedAtAction(nameof(GetLibroById), new { id = nuevoLibro.Id }, nuevoLibro);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateLibro(int id, [FromBody] Libro libro)
+        {
+            var actualizado = _libroService.UpdateLibro(id, libro);
+            return actualizado != null ? Ok(actualizado) : NotFound();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteLibro(int id)
+        {
+            var eliminado = _libroService.DeleteLibro(id);
+            return eliminado ? NoContent() : NotFound();
         }
 
         [HttpGet("autores-externos")]

@@ -19,16 +19,10 @@ namespace LibrosAPI.Services
         }
 
         // Obtener todos los libros locales
-        public List<Libro> GetLibros()
-        {
-            return LibrosLocales;
-        }
+        public List<Libro> GetLibros() => LibrosLocales;
 
         // Obtener libro por Id
-        public Libro? GetLibroById(int id)
-        {
-            return LibrosLocales.FirstOrDefault(l => l.Id == id);
-        }
+        public Libro? GetLibroById(int id) => LibrosLocales.FirstOrDefault(l => l.Id == id);
 
         // Agregar un libro
         public Libro AddLibro(Libro libro)
@@ -36,6 +30,26 @@ namespace LibrosAPI.Services
             libro.Id = LibrosLocales.Count + 1;
             LibrosLocales.Add(libro);
             return libro;
+        }
+
+        // Actualizar un libro
+        public Libro? UpdateLibro(int id, Libro libroActualizado)
+        {
+            var libro = LibrosLocales.FirstOrDefault(l => l.Id == id);
+            if (libro == null) return null;
+
+            libro.Titulo = libroActualizado.Titulo;
+            libro.Autor = libroActualizado.Autor;
+            return libro;
+        }
+
+        // Eliminar un libro
+        public bool DeleteLibro(int id)
+        {
+            var libro = LibrosLocales.FirstOrDefault(l => l.Id == id);
+            if (libro == null) return false;
+            LibrosLocales.Remove(libro);
+            return true;
         }
 
         // Obtener autores externos desde JSONPlaceholder
